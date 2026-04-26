@@ -36,24 +36,41 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
             </Label>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: "/backgrounds/sapsan-bridge.jpg", label: "Железнодорожный Мост" },
-                { value: "/backgrounds/moskow.png", label: "Железные Дороги Москвы" },
-                { value: "/backgrounds/parovoz-petergof.png", label: "Паровозы в Петергофе" },
-                { value: "/backgrounds/gruz-train.jpg", label: "Грузовой поезд" },
-                { value: "/backgrounds/sapsan-zima.png", label: "Зимний Сапсан" },
-                { value: "/backgrounds/pass.png", label: "Пассажирский ЭП2к" },
+                {
+                  value: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sapsan-bridge-P2tdAk8LEJIgwJMoqXjcGPvLxnyjps.jpg",
+                  label: "Сапсан на мосту",
+                },
+                {
+                  value: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80",
+                  label: "Горная дорога",
+                },
+                {
+                  value: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1920&q=80",
+                  label: "Железная дорога",
+                },
+                {
+                  value: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1920&q=80",
+                  label: "Ночной поезд",
+                },
+                {
+                  value: "https://images.unsplash.com/photo-1615887023839-baeea00dfb2f?w=1920&q=80",
+                  label: "Зимний путь",
+                },
+                {
+                  value: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80",
+                  label: "Городской вокзал",
+                },
               ].map((bg) => (
                 <button
                   key={bg.value}
                   onClick={() => updateTheme({ background: bg.value })}
-                  className={`relative overflow-hidden rounded-lg border-2 transition-all w-full ${
-                    theme.background === bg.value ? "ring-2 ring-offset-2" : "border-white/20 hover:border-white/40"
-                  }`}
-                  style={
-                    theme.background === bg.value ? { borderColor: getTieColor(), ringColor: getTieColor() + "50" } : {}
-                  }
+                  className={`relative rounded-lg border-2 transition-all w-full overflow-hidden`}
+                  style={{
+                    borderColor: theme.background === bg.value ? getTieColor() : "rgba(255,255,255,0.2)",
+                    boxShadow: theme.background === bg.value ? `0 0 0 2px ${getTieColor()}60` : undefined,
+                  }}
                 >
-                  <div className="h-32 w-full bg-cover bg-center" style={{ backgroundImage: `url(${bg.value})` }} />
+                  <img src={bg.value} alt={bg.label} className="h-32 w-full object-cover object-center" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <span className="text-white font-medium text-xs px-2 text-center">{bg.label}</span>
                   </div>

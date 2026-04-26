@@ -80,13 +80,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   const setColorTheme = (color: string) => {
+    const BG_SAPSAN = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sapsan-bridge-P2tdAk8LEJIgwJMoqXjcGPvLxnyjps.jpg"
     const backgroundMap: { [key: string]: string } = {
-      red: "/backgrounds/double-decker-train.jpg",
-      blue: "/backgrounds/sapsan-bridge.jpg",
-      orange: "/backgrounds/lastochka-petergof.jpg",
-      green: "/backgrounds/steam-locomotive.png",
-      purple: "/backgrounds/double-decker-train.jpg",
-      teal: "/backgrounds/sapsan-bridge.jpg",
+      red: BG_SAPSAN,
+      blue: BG_SAPSAN,
+      orange: BG_SAPSAN,
+      green: BG_SAPSAN,
+      purple: BG_SAPSAN,
+      teal: BG_SAPSAN,
     }
 
     // If it's a hex color, keep current background

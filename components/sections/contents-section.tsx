@@ -176,8 +176,15 @@ export function ContentsSection({ onSectionChange, userRole }: ContentsSectionPr
             Обзор всех разделов и материалов
           </p>
         </div>
-        <div className={`text-sm italic ${theme.mode === "dark" ? "text-white/50" : "text-gray-500"}`}>
-          By Egor_Washington
+        <div
+          className="text-xs font-semibold tracking-wide px-3 py-1.5 rounded-full"
+          style={{
+            color: getTieColor(),
+            backgroundColor: getTieColor() + "18",
+            border: `1px solid ${getTieColor()}40`,
+          }}
+        >
+          by Egor_Washington
         </div>
       </div>
 

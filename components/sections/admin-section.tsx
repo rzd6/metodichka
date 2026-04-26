@@ -345,17 +345,6 @@ export function AdminSection() {
             Управление правами доступа и учётными записями
           </p>
         </div>
-        {canAddUser() && (
-          <Button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="text-white font-semibold shadow-lg"
-            style={{ backgroundColor: getTieColor() }}
-            size="lg"
-          >
-            <UserPlus className="w-5 h-5 mr-2" />
-            Добавить аккаунт
-          </Button>
-        )}
       </div>
 
       {isLoading ? (
@@ -366,6 +355,32 @@ export function AdminSection() {
         </div>
       ) : (
         <>
+          {canAddUser() && (
+            <Card
+              className={`border-2 rounded-2xl overflow-hidden ${
+                theme.mode === "dark" ? "bg-[#0f1419]/50 border-white/10" : "bg-white border-gray-200"
+              }`}
+            >
+              <CardHeader className="border-b pb-4" style={{ borderColor: getTieColor() }}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-3" style={{ color: getTieColor() }}>
+                    <UserPlus className="w-5 h-5" />
+                    Добавить сотрудника
+                  </h3>
+                  <Button
+                    onClick={() => setShowAddForm(!showAddForm)}
+                    className="text-white font-semibold shadow-lg"
+                    style={{ backgroundColor: getTieColor() }}
+                    size="lg"
+                  >
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    {showAddForm ? "Скрыть форму" : "Добавить аккаунт"}
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+          )}
+
           {showAddForm && canAddUser() && (
             <Card
               className={`border-2 rounded-2xl overflow-hidden ${

@@ -220,13 +220,14 @@ export function SettingsSection() {
             {backgroundOptions.map((option) => {
               const isSelected = theme.colorTheme === option.value
               return (
-                <Card
+                <div
                   key={option.value}
-                  className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-                    isSelected ? "shadow-2xl scale-105" : "hover:scale-102 opacity-70 hover:opacity-100"
+                  className={`group relative rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden ${
+                    isSelected ? "shadow-2xl" : "opacity-70 hover:opacity-100"
                   }`}
                   style={{
-                    borderColor: isSelected ? getTieColor() : undefined,
+                    borderColor: isSelected ? getTieColor() : "transparent",
+                    boxShadow: isSelected ? `0 0 0 2px ${getTieColor()}60, 0 20px 40px ${getTieColor()}30` : undefined,
                   }}
                 >
                   <div className="relative h-48 overflow-hidden">
@@ -254,7 +255,7 @@ export function SettingsSection() {
                       </div>
                     </div>
                   </div>
-                </Card>
+                </div>
               )
             })}
           </div>
