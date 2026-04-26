@@ -6,12 +6,14 @@ import { Copy, Check, GraduationCap, X, Circle } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useTheme } from "@/contexts/theme-context"
 import { getThemeColor } from "@/lib/theme-utils"
+import { useCopySequence } from "@/hooks/use-copy-sequence"
 
 export function ExamsSection() {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<"theoretical" | "practical">("theoretical")
   const [answerScores, setAnswerScores] = useState<{ [key: string]: number }>({})
   const { theme } = useTheme()
+  const { markCopied, getLineState } = useCopySequence()
 
   useEffect(() => {
     setCopiedIndex(null)
@@ -19,9 +21,10 @@ export function ExamsSection() {
 
   const getTieColor = () => getThemeColor(theme.colorTheme)
 
-  const copyToClipboard = (text: string, id: string) => {
+  const copyToClipboard = (text: string, id: string, groupId?: string, index?: number) => {
     navigator.clipboard.writeText(text)
     setCopiedIndex(id)
+    if (groupId !== undefined && index !== undefined) markCopied(groupId, index)
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
@@ -51,6 +54,7 @@ export function ExamsSection() {
 
     return content.map((line, index) => {
       const lineId = `${examId}-${index}`
+      const state = getLineState(examId, index, content.length)
       // Проверяем, является ли строка вопросом
       const isQuestion =
         (line.trim().startsWith("say") || line.trim().startsWith("b")) &&
@@ -69,32 +73,43 @@ export function ExamsSection() {
       return (
         <div key={index} className="space-y-3 mb-4">
           <button
-            onClick={() => copyToClipboard(line, lineId)}
-            className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 group ${
-              theme.mode === "dark"
-                ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
-                : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
-            }`}
+            onClick={() => copyToClipboard(line, lineId, examId, index)}
+            className="w-full p-4 rounded-xl border-2 text-left transition-all duration-300 group"
             style={{
               borderLeftWidth: "4px",
-              borderLeftColor: getTieColor(),
+              borderLeftColor: state === "copied" ? "#22c55e" : state === "next" ? "#16a34a" : getTieColor(),
+              backgroundColor:
+                state === "copied"
+                  ? theme.mode === "dark" ? "rgba(34,197,94,0.08)" : "rgba(34,197,94,0.06)"
+                  : state === "next"
+                    ? theme.mode === "dark" ? "rgba(22,163,74,0.18)" : "rgba(22,163,74,0.12)"
+                    : theme.mode === "dark" ? "rgba(15,20,25,0.8)" : "rgba(255,255,255,0.8)",
+              borderColor: state === "copied" ? "rgba(34,197,94,0.4)" : state === "next" ? "rgba(22,163,74,0.7)" : undefined,
+              boxShadow: state === "next" ? "0 0 0 1px rgba(22,163,74,0.4)" : undefined,
             }}
           >
             <div className="flex items-start justify-between gap-4">
-              <p className={`text-sm flex-1 ${theme.mode === "dark" ? "text-white/90" : "text-gray-900"}`}>{line}</p>
+              <p
+                className={`text-sm flex-1 transition-colors duration-200 ${
+                  state === "copied"
+                    ? "text-green-500"
+                    : state === "next"
+                      ? theme.mode === "dark" ? "text-green-300 font-medium" : "text-green-800 font-medium"
+                      : theme.mode === "dark" ? "text-white/90" : "text-gray-900"
+                }`}
+              >
+                {line}
+              </p>
               <div
                 className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-                style={{
-                  backgroundColor: getTieColor() + "20",
-                }}
+                style={{ backgroundColor: state === "copied" || state === "next" ? "rgba(34,197,94,0.2)" : getTieColor() + "20" }}
               >
                 {copiedIndex === lineId ? (
-                  <Check className="w-4 h-4" style={{ color: getTieColor() }} />
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : state === "next" ? (
+                  <Copy className="w-4 h-4 text-green-600" />
                 ) : (
-                  <Copy
-                    className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity"
-                    style={{ color: getTieColor() }}
-                  />
+                  <Copy className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" style={{ color: getTieColor() }} />
                 )}
               </div>
             </div>

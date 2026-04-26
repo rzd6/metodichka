@@ -8,6 +8,7 @@ import { useTheme } from "@/contexts/theme-context"
 import type { UserRole } from "@/data/users"
 import { useState, useEffect } from "react"
 import { getThemeColor } from "@/lib/theme-utils"
+import { useCopySequence } from "@/hooks/use-copy-sequence"
 
 interface RadioReportsSectionProps {
   userRole?: UserRole
@@ -19,6 +20,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
   const [userTag, setUserTag] = useState("[ТЭГ]")
   const [fillMode, setFillMode] = useState(false)
   const [filledReports, setFilledReports] = useState<{ [key: string]: string }>({})
+  const { markCopied, getLineState } = useCopySequence()
 
   useEffect(() => {
     const authData = localStorage.getItem("currentUser")
@@ -46,7 +48,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
 
   const getTieColor = () => getThemeColor(theme.colorTheme)
 
-  const copyToClipboard = (text: string, index: string) => {
+  const copyToClipboard = (text: string, index: string, groupId?: string, lineIndex?: number) => {
     let processedText = replaceTag(text)
     if (fillMode && filledReports[index]) {
       processedText = processedText.replace(/\*[^*]+\*/g, () => {
@@ -55,6 +57,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
     }
     navigator.clipboard.writeText(processedText)
     setCopiedIndex(index)
+    if (groupId !== undefined && lineIndex !== undefined) markCopied(groupId, lineIndex)
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
@@ -175,7 +178,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
           reports: [
             {
               text: "r [ТЧР] Приступил к ремонту подвижных составов в депо ТЧЭ-1 'Мирный'",
-              desc: "Начало ремонта в депо г. Мирный",
+              desc: "Начало ремонта в деп�� г. Мирный",
             },
             {
               text: "r [ТЧР] Закончил ремонт подвижных составов в депо ТЧЭ-1 'Мирный'",
@@ -320,7 +323,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
       {
         subtitle: "Дежурство на переезде [ДПП]",
         reports: [
-          { text: "r [ДПП] Занял ЗИЛ для отправки на место несения дежурства.", desc: "Перед выездом" },
+          { text: "r [ДПП] Занял ЗИЛ для отправки на место несе��ия дежурства.", desc: "Перед выездом" },
           { text: "r [ДПП] Заступил на дежурство на переезде *название*.", desc: "Начало дежурства" },
           { text: "r [ДПП] Продолжаю дежурство на переезде *название*.", desc: "Каждые 10 минут" },
           {
@@ -464,43 +467,63 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
     ],
   }
 
-  const renderReportItem = (report: { text: string; desc?: string }, copyId: string, colorClass: string) => {
-    const isCopied = copiedIndex === copyId
+  const renderReportItem = (
+    report: { text: string; desc?: string },
+    copyId: string,
+    colorClass: string,
+    groupId?: string,
+    lineIndex?: number,
+    totalLines?: number,
+  ) => {
+    const state =
+      groupId !== undefined && lineIndex !== undefined && totalLines !== undefined
+        ? getLineState(groupId, lineIndex, totalLines)
+        : "normal"
+
     return (
       <button
-        onClick={() => copyToClipboard(report.text, copyId)}
-        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 group mb-3 ${
-          theme.mode === "dark"
-            ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
-            : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
-        }`}
+        onClick={() => copyToClipboard(report.text, copyId, groupId, lineIndex)}
+        className="w-full p-4 rounded-xl border-2 text-left transition-all duration-300 group mb-3"
         style={{
           borderLeftWidth: "4px",
-          borderLeftColor: getTieColor(),
+          borderLeftColor: state === "copied" ? "#22c55e" : state === "next" ? "#16a34a" : getTieColor(),
+          backgroundColor:
+            state === "copied"
+              ? theme.mode === "dark" ? "rgba(34,197,94,0.08)" : "rgba(34,197,94,0.06)"
+              : state === "next"
+                ? theme.mode === "dark" ? "rgba(22,163,74,0.18)" : "rgba(22,163,74,0.12)"
+                : theme.mode === "dark" ? "rgba(15,20,25,0.8)" : "rgba(255,255,255,0.8)",
+          borderColor: state === "copied" ? "rgba(34,197,94,0.4)" : state === "next" ? "rgba(22,163,74,0.7)" : undefined,
+          boxShadow: state === "next" ? "0 0 0 1px rgba(22,163,74,0.4)" : undefined,
         }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <code className={`block mb-1 font-mono text-sm ${colorClass}`}>{replaceTag(report.text)}</code>
+            <code
+              className={`block mb-1 font-mono text-sm transition-colors duration-200 ${
+                state === "copied"
+                  ? "text-green-500"
+                  : state === "next"
+                    ? theme.mode === "dark" ? "text-green-300 font-medium" : "text-green-800 font-medium"
+                    : colorClass
+              }`}
+            >
+              {replaceTag(report.text)}
+            </code>
             {report.desc && (
               <p className={`text-xs ${theme.mode === "dark" ? "text-white/60" : "text-gray-500"}`}>{report.desc}</p>
             )}
           </div>
-
-          {/* Right icon - copy button */}
           <div
             className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-            style={{
-              backgroundColor: getTieColor() + "20",
-            }}
+            style={{ backgroundColor: state === "copied" || state === "next" ? "rgba(34,197,94,0.2)" : getTieColor() + "20" }}
           >
             {copiedIndex === copyId ? (
-              <Check className="w-4 h-4" style={{ color: getTieColor() }} />
+              <Check className="w-4 h-4 text-green-500" />
+            ) : state === "next" ? (
+              <Copy className="w-4 h-4 text-green-600" />
             ) : (
-              <Copy
-                className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity"
-                style={{ color: getTieColor() }}
-              />
+              <Copy className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" style={{ color: getTieColor() }} />
             )}
           </div>
         </div>
@@ -661,7 +684,8 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                     {section.reports.map((report, reportIndex) => {
                       const copyId = `common-${sectionIndex}-${reportIndex}`
                       const colorClass = theme.mode === "dark" ? "text-green-400" : "text-green-600"
-                      return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                      const groupId = `common-${sectionIndex}`
+                      return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, groupId, reportIndex, section.reports.length)}</div>
                     })}
                   </div>
                 </div>
@@ -704,7 +728,8 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                         {section.reports.map((report, reportIndex) => {
                           const copyId = `${rankKey}-${sectionIndex}-${reportIndex}`
                           const colorClass = theme.mode === "dark" ? "text-blue-400" : "text-blue-600"
-                          return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                          const groupId = `${rankKey}-${sectionIndex}`
+                          return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, groupId, reportIndex, section.reports.length)}</div>
                         })}
                       </div>
                     </div>
@@ -742,7 +767,8 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                       {section.reports.map((report, reportIndex) => {
                         const copyId = `duty-${sectionIndex}-${reportIndex}`
                         const colorClass = theme.mode === "dark" ? "text-yellow-400" : "text-yellow-600"
-                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                        const groupId = `duty-${sectionIndex}`
+                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, groupId, reportIndex, section.reports.length)}</div>
                       })}
                     </div>
                   </div>
