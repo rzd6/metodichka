@@ -278,6 +278,17 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
         <circle cx="16" cy="16" r="1.5" fill={getIconColor(isActive)} />
       </svg>
     ),
+    "bug-report": (isActive) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 15v-5m0-4h.01"
+          stroke={getIconColor(isActive)}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
     articles: (isActive) => (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="4" y="4" width="16" height="16" rx="2" stroke={getIconColor(isActive)} strokeWidth="2" />
@@ -329,6 +340,10 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
 
   if (canAccessManagement(user.role)) {
     sections.push({ id: "admin", label: "Управление" })
+  }
+
+  if (user.role === "Руководство") {
+    sections.push({ id: "bug-report", label: "Баг-репорт" })
   }
 
   const getSidebarBg = () => {

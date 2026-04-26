@@ -249,3 +249,7 @@ export function canAccessGovWave(role: UserRole): boolean {
 export function canAccessGoogleSheets(role: UserRole): boolean {
   return role === "Руководство" || role === "Заместитель" || role === "Старший Состав"
 }
+
+export function canAccessBugReport(role: UserRole): boolean {
+  return role === "Руководство"
+}
