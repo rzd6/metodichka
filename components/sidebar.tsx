@@ -248,6 +248,17 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
         <rect x="16" y="16" width="6" height="6" rx="1" stroke={getIconColor(isActive)} strokeWidth="1.5" />
       </svg>
     ),
+    "management-bugs": (isActive) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"
+          stroke={getIconColor(isActive)}
+          strokeWidth="2"
+        />
+        <path d="M9 12h6M9 16h4" stroke={getIconColor(isActive)} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="17" cy="7" r="3" fill={isActive ? "#ffffff" : "#ef4444"} />
+      </svg>
+    ),
     admin: (isActive) => (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="3" stroke={getIconColor(isActive)} strokeWidth="2" />
@@ -331,6 +342,10 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
     sections.push({ id: "admin", label: "Управление" })
   }
 
+  if (user.role === "Руководство") {
+    sections.push({ id: "management-bugs", label: "Сообщения о проблемах" })
+  }
+
   const getSidebarBg = () => {
     if (theme.mode === "dark") {
       return "bg-black"
@@ -384,8 +399,8 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
               <>
                 <div className="flex items-center gap-3 mb-4">
                   <div
-                    className="w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-full border-2"
-                    style={{ borderColor: getTieColor() }}
+                    className="w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-full"
+                    style={{ boxShadow: `0 0 0 2px ${getTieColor()}` }}
                   >
                     <Image
                       src={getAvatarForRole(user.role) || "/placeholder.svg"}
@@ -420,8 +435,8 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
             )}
             {isCollapsed && (
               <div
-                className="w-12 h-12 flex items-center justify-center mx-auto overflow-hidden rounded-full border-2"
-                style={{ borderColor: getTieColor() }}
+                className="w-12 h-12 flex items-center justify-center mx-auto overflow-hidden rounded-full"
+                style={{ boxShadow: `0 0 0 2px ${getTieColor()}` }}
               >
                 <Image
                   src={getAvatarForRole(user.role) || "/placeholder.svg"}

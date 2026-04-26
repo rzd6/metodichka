@@ -54,10 +54,26 @@ export function SettingsSection() {
   ]
 
   const backgroundOptions = [
-    { value: "red", label: "Двухэтажный поезд", preview: "/backgrounds/double-decker-train.jpg" },
-    { value: "blue", label: "Сапсан на мосту", preview: "/backgrounds/sapsan-bridge.jpg" },
-    { value: "orange", label: "Ласточка у Петергофа", preview: "/backgrounds/lastochka-petergof.jpg" },
-    { value: "green", label: "Паровоз на Скуратово", preview: "/backgrounds/steam-locomotive.png" },
+    {
+      value: "red",
+      label: "Двухэтажный поезд",
+      colorHex: "#ef4444",
+    },
+    {
+      value: "blue",
+      label: "Сапсан на мосту",
+      colorHex: "#3b82f6",
+    },
+    {
+      value: "orange",
+      label: "Ласточка у Петергофа",
+      colorHex: "#f97316",
+    },
+    {
+      value: "green",
+      label: "Паровоз на Скуратово",
+      colorHex: "#22c55e",
+    },
   ]
 
   const getTieColor = () => {
@@ -220,41 +236,48 @@ export function SettingsSection() {
             {backgroundOptions.map((option) => {
               const isSelected = theme.colorTheme === option.value
               return (
-                <Card
+                <button
                   key={option.value}
-                  className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-                    isSelected ? "shadow-2xl scale-105" : "hover:scale-102 opacity-70 hover:opacity-100"
+                  onClick={() => setColorTheme(option.value)}
+                  className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer text-left ${
+                    isSelected ? "shadow-2xl scale-105" : "hover:scale-[1.02] opacity-70 hover:opacity-100"
                   }`}
                   style={{
-                    borderColor: isSelected ? getTieColor() : undefined,
+                    borderColor: isSelected ? getTieColor() : theme.mode === "dark" ? "rgba(255,255,255,0.1)" : "#e5e7eb",
                   }}
                 >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={option.preview || "/placeholder.svg"}
-                      alt={option.label}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
+                  <div
+                    className="relative h-48 overflow-hidden flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${option.colorHex}cc 0%, ${option.colorHex}88 50%, ${option.colorHex}44 100%)`,
+                    }}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" opacity="0.25">
+                        <rect x="4" y="6" width="16" height="12" rx="2" stroke="white" strokeWidth="1.5" />
+                        <path d="M4 10h16M8 6V4M16 6V4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                        <circle cx="8" cy="18" r="1.5" fill="white" />
+                        <circle cx="16" cy="18" r="1.5" fill="white" />
+                      </svg>
+                    </div>
                     <div
-                      className="absolute inset-0 transition-opacity"
+                      className="absolute inset-0"
                       style={{
-                        background: isSelected
-                          ? `linear-gradient(to top, ${getTieColor()}dd, ${getTieColor()}00)`
-                          : "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0))",
                       }}
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <div className="flex items-center justify-between">
                         <span className="text-white font-semibold text-base drop-shadow-lg">{option.label}</span>
                         {isSelected && (
-                          <div className="bg-white rounded-full p-1.5 shadow-lg">
+                          <div className="bg-white rounded-full p-1.5 shadow-lg flex-shrink-0">
                             <Check className="w-4 h-4" style={{ color: getTieColor() }} />
                           </div>
                         )}
                       </div>
                     </div>
                   </div>
-                </Card>
+                </button>
               )
             })}
           </div>

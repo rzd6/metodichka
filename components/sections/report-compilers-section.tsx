@@ -9,6 +9,7 @@ import { Copy, AlertCircle, Train, MapPin, Settings, User, Hash, Check } from "l
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useTheme } from "@/contexts/theme-context"
 import { getThemeColor } from "@/lib/theme-utils"
+import { SendBugButton } from "@/components/send-bug-button"
 
 export function ReportCompilerSection() {
   const [selectedDirection, setSelectedDirection] = useState<string | null>(null)
@@ -21,6 +22,7 @@ export function ReportCompilerSection() {
   const [passNumber, setPassNumber] = useState("")
   const [flightNumber, setFlightNumber] = useState("")
   const [dispatcherName, setDispatcherName] = useState("")
+  const [dncName, setDncName] = useState("")
   const [assistantName, setAssistantName] = useState("")
 
   const [generatedReports, setGeneratedReports] = useState<string[]>([])
@@ -114,6 +116,7 @@ export function ReportCompilerSection() {
     setPassNumber("")
     setFlightNumber("")
     setDispatcherName("")
+    setDncName("")
     setAssistantName("")
   }
 
@@ -713,23 +716,26 @@ export function ReportCompilerSection() {
 
   return (
     <div className="space-y-6 opacity-95">
-      <div className="flex items-center gap-3 pb-4 border-b" style={{ borderColor: getTieColor() + "40" }}>
-        <div
-          className="p-3 rounded-xl"
-          style={{
-            background: `linear-gradient(135deg, ${getTieColor()}20, ${getTieColor()}10)`,
-          }}
-        >
-          <Settings className="w-6 h-6" style={{ color: getTieColor() }} />
+      <div className="flex items-start justify-between gap-4 pb-4 border-b" style={{ borderColor: getTieColor() + "40" }}>
+        <div className="flex items-center gap-3">
+          <div
+            className="p-3 rounded-xl"
+            style={{
+              background: `linear-gradient(135deg, ${getTieColor()}20, ${getTieColor()}10)`,
+            }}
+          >
+            <Settings className="w-6 h-6" style={{ color: getTieColor() }} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold" style={{ color: getTieColor() }}>
+              Составитель докладов
+            </h2>
+            <p className={`text-sm ${theme.mode === "dark" ? "text-white/70" : "text-gray-600"}`}>
+              Генератор докладов для рейсов на поезде
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-3xl font-bold" style={{ color: getTieColor() }}>
-            Составитель докладов
-          </h2>
-          <p className={`text-sm ${theme.mode === "dark" ? "text-white/70" : "text-gray-600"}`}>
-            Генератор докладов для рейсов на поезде
-          </p>
-        </div>
+        <SendBugButton section="report-compiler" />
       </div>
 
       <Card

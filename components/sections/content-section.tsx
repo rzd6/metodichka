@@ -17,6 +17,7 @@ import { RadioReportsSection } from "./radio-reports-section"
 import { ReportGenerationSection } from "./report-generation-section"
 import { RetroTrainSection } from "./retro-train-section"
 import { RZDWebsiteSection } from "./rzd-website-section"
+import { ManagementBugsSection } from "./management-bugs-section"
 import type { UserRole } from "@/data/users"
 
 interface ContentSectionProps {
@@ -61,6 +62,8 @@ export function ContentSection({ activeSection, userRole, userNickname }: Conten
       return <ReportGenerationSection />
     case "rzd-website":
       return <RZDWebsiteSection userRole={userRole || "Стажёр"} userNickname={userNickname} />
+    case "management-bugs":
+      return <ManagementBugsSection userRole={userRole} />
     default:
       return <InformationSection userRole={userRole} />
   }

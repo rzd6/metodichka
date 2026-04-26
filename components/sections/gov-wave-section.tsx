@@ -6,6 +6,7 @@ import { Copy, Check, Radio } from "lucide-react"
 import { useTheme } from "@/contexts/theme-context"
 import { contentData } from "@/data/content"
 import { getThemeColor } from "@/lib/theme-utils"
+import { SendBugButton } from "@/components/send-bug-button"
 
 export function GovWaveSection() {
   const { theme } = useTheme()
@@ -28,23 +29,26 @@ export function GovWaveSection() {
 
   return (
     <div className="space-y-6 opacity-95">
-      <div className="flex items-center gap-3 pb-4 border-b" style={{ borderColor: getTieColor() + "40" }}>
-        <div
-          className="p-3 rounded-xl"
-          style={{
-            background: `linear-gradient(135deg, ${getTieColor()}20, ${getTieColor()}10)`,
-          }}
-        >
-          <Radio className="w-6 h-6" style={{ color: getTieColor() }} />
+      <div className="flex items-start justify-between gap-4 pb-4 border-b" style={{ borderColor: getTieColor() + "40" }}>
+        <div className="flex items-center gap-3">
+          <div
+            className="p-3 rounded-xl"
+            style={{
+              background: `linear-gradient(135deg, ${getTieColor()}20, ${getTieColor()}10)`,
+            }}
+          >
+            <Radio className="w-6 h-6" style={{ color: getTieColor() }} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold" style={{ color: getTieColor() }}>
+              Государственная волна
+            </h2>
+            <p className={`text-sm ${theme.mode === "dark" ? "text-white/70" : "text-gray-600"}`}>
+              Шаблоны объявлений для государственной волны
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-3xl font-bold" style={{ color: getTieColor() }}>
-            Государственная волна
-          </h2>
-          <p className={`text-sm ${theme.mode === "dark" ? "text-white/70" : "text-gray-600"}`}>
-            Шаблоны объявлений для государственной волны
-          </p>
-        </div>
+        <SendBugButton section="gov-wave" />
       </div>
 
       <Accordion type="single" collapsible className="space-y-4">

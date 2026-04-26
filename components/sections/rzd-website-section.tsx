@@ -25,7 +25,8 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
   const [articles, setArticles] = useState<Article[]>([])
   const [editingArticle, setEditingArticle] = useState<Article | null>(null)
   const [showArticleForm, setShowArticleForm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
@@ -42,8 +43,17 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
 
   const loadData = async () => {
     setIsLoading(true)
+    setLoadError(false)
+
+    // Timeout after 8 seconds to avoid eternal loading
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false)
+      setLoadError(true)
+    }, 8000)
+
     try {
       const articlesData = await getArticles()
+      clearTimeout(timeoutId)
 
       const filteredArticles =
         userRole === "Руководство"
@@ -52,12 +62,8 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
 
       setArticles(filteredArticles)
     } catch (error) {
-      console.error("[v0] Error loading articles:", error)
-      toast({
-        title: "Ошибка",
-        description: "Не удалось загрузить статьи",
-        variant: "destructive",
-      })
+      clearTimeout(timeoutId)
+      setLoadError(true)
     } finally {
       setIsLoading(false)
     }
@@ -571,7 +577,24 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
 
           <div className="space-y-4">
             {isLoading && articles.length === 0 ? (
-              <p className="text-center text-muted-foreground py-12 text-lg">Загрузка...</p>
+              <div className="flex flex-col items-center gap-3 py-16">
+                <div
+                  className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+                  style={{ borderColor: getTieColor(), borderTopColor: "transparent" }}
+                />
+                <p className="text-sm text-muted-foreground">Загрузка статей...</p>
+              </div>
+            ) : loadError && articles.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-16">
+                <p className="text-muted-foreground">Не удалось загрузить статьи.</p>
+                <button
+                  onClick={loadData}
+                  className="text-sm font-medium px-4 py-2 rounded-lg"
+                  style={{ backgroundColor: getTieColor() + "20", color: getTieColor() }}
+                >
+                  Попробовать снова
+                </button>
+              </div>
             ) : articles.length === 0 ? (
               <p className="text-center text-muted-foreground py-12 text-lg">
                 {canManageArticles ? "Статьи отсутствуют" : "Нет доступных статей для вашей роли"}

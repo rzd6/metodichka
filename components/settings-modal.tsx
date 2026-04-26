@@ -36,28 +36,40 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
             </Label>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: "/backgrounds/sapsan-bridge.jpg", label: "Железнодорожный Мост" },
-                { value: "/backgrounds/moskow.png", label: "Железные Дороги Москвы" },
-                { value: "/backgrounds/parovoz-petergof.png", label: "Паровозы в Петергофе" },
-                { value: "/backgrounds/gruz-train.jpg", label: "Грузовой поезд" },
-                { value: "/backgrounds/sapsan-zima.png", label: "Зимний Сапсан" },
-                { value: "/backgrounds/pass.png", label: "Пассажирский ЭП2к" },
+                { value: "blue", label: "Сапсан на мосту", color: "#3b82f6" },
+                { value: "teal", label: "Железные дороги", color: "#14b8a6" },
+                { value: "orange", label: "Ласточка у Петергофа", color: "#f97316" },
+                { value: "red", label: "Двухэтажный поезд", color: "#ef4444" },
+                { value: "purple", label: "Зимний Сапсан", color: "#a855f7" },
+                { value: "green", label: "Паровоз на Скуратово", color: "#22c55e" },
               ].map((bg) => (
                 <button
                   key={bg.value}
-                  onClick={() => updateTheme({ background: bg.value })}
+                  onClick={() => updateTheme({ colorTheme: bg.value })}
                   className={`relative overflow-hidden rounded-lg border-2 transition-all w-full ${
-                    theme.background === bg.value ? "ring-2 ring-offset-2" : "border-white/20 hover:border-white/40"
+                    theme.colorTheme === bg.value ? "border-opacity-100 shadow-lg" : "border-white/20 hover:border-white/40"
                   }`}
                   style={
-                    theme.background === bg.value ? { borderColor: getTieColor(), ringColor: getTieColor() + "50" } : {}
+                    theme.colorTheme === bg.value ? { borderColor: getTieColor() } : {}
                   }
                 >
-                  <div className="h-32 w-full bg-cover bg-center" style={{ backgroundImage: `url(${bg.value})` }} />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-white font-medium text-xs px-2 text-center">{bg.label}</span>
+                  <div
+                    className="h-32 w-full flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${bg.color}cc 0%, ${bg.color}66 100%)`,
+                    }}
+                  >
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" opacity="0.4">
+                      <rect x="4" y="6" width="16" height="12" rx="2" stroke="white" strokeWidth="1.5" />
+                      <path d="M4 10h16M8 6V4M16 6V4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                      <circle cx="8" cy="18" r="1.5" fill="white" />
+                      <circle cx="16" cy="18" r="1.5" fill="white" />
+                    </svg>
                   </div>
-                  {theme.background === bg.value && (
+                  <div className="absolute inset-0 bg-black/30 flex items-end justify-start p-2">
+                    <span className="text-white font-medium text-xs">{bg.label}</span>
+                  </div>
+                  {theme.colorTheme === bg.value && (
                     <div className="absolute top-2 right-2 bg-white rounded-full p-1">
                       <Check className="w-3 h-3" style={{ color: getTieColor() }} />
                     </div>
