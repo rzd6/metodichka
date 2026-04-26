@@ -16,6 +16,7 @@ interface RadioReportsSectionProps {
 export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
   const { theme } = useTheme()
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
+  const [nextHighlight, setNextHighlight] = useState<Record<string, number>>({})
   const [userTag, setUserTag] = useState("[ТЭГ]")
   const [fillMode, setFillMode] = useState(false)
   const [filledReports, setFilledReports] = useState<{ [key: string]: string }>({})
@@ -46,7 +47,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
 
   const getTieColor = () => getThemeColor(theme.colorTheme)
 
-  const copyToClipboard = (text: string, index: string) => {
+  const copyToClipboard = (text: string, index: string, groupId?: string, groupIndex?: number) => {
     let processedText = replaceTag(text)
     if (fillMode && filledReports[index]) {
       processedText = processedText.replace(/\*[^*]+\*/g, () => {
@@ -55,6 +56,9 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
     }
     navigator.clipboard.writeText(processedText)
     setCopiedIndex(index)
+    if (groupId !== undefined && groupIndex !== undefined) {
+      setNextHighlight((prev) => ({ ...prev, [groupId]: groupIndex + 1 }))
+    }
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
@@ -175,7 +179,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
           reports: [
             {
               text: "r [ТЧР] Приступил к ремонту подвижных составов в депо ТЧЭ-1 'Мирный'",
-              desc: "Начало ремонта в депо г. Мирный",
+              desc: "Начало ремонта в деп�� г. Мирный",
             },
             {
               text: "r [ТЧР] Закончил ремонт подвижных составов в депо ТЧЭ-1 'Мирный'",
@@ -464,24 +468,33 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
     ],
   }
 
-  const renderReportItem = (report: { text: string; desc?: string }, copyId: string, colorClass: string) => {
+  const renderReportItem = (
+    report: { text: string; desc?: string },
+    copyId: string,
+    colorClass: string,
+    groupId?: string,
+    groupIndex?: number,
+  ) => {
     const isCopied = copiedIndex === copyId
+    const isNext = groupId !== undefined && groupIndex !== undefined && nextHighlight[groupId] === groupIndex
     return (
       <button
-        onClick={() => copyToClipboard(report.text, copyId)}
-        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 group mb-3 ${
-          theme.mode === "dark"
+        onClick={() => copyToClipboard(report.text, copyId, groupId, groupIndex)}
+        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 group mb-3 ${
+          isNext ? "animate-pulse" : theme.mode === "dark"
             ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
             : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
         }`}
         style={{
           borderLeftWidth: "4px",
-          borderLeftColor: getTieColor(),
+          borderLeftColor: isNext ? "#22c55e" : getTieColor(),
+          backgroundColor: isNext ? "rgba(34,197,94,0.10)" : undefined,
+          borderColor: isNext ? "#22c55e" : undefined,
         }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <code className={`block mb-1 font-mono text-sm ${colorClass}`}>{replaceTag(report.text)}</code>
+            <code className={`block mb-1 font-mono text-sm ${isNext ? "text-green-400" : colorClass}`}>{replaceTag(report.text)}</code>
             {report.desc && (
               <p className={`text-xs ${theme.mode === "dark" ? "text-white/60" : "text-gray-500"}`}>{report.desc}</p>
             )}
@@ -490,16 +503,14 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
           {/* Right icon - copy button */}
           <div
             className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-            style={{
-              backgroundColor: getTieColor() + "20",
-            }}
+            style={{ backgroundColor: isNext ? "#22c55e30" : getTieColor() + "20" }}
           >
-            {copiedIndex === copyId ? (
+            {isCopied ? (
               <Check className="w-4 h-4" style={{ color: getTieColor() }} />
             ) : (
               <Copy
                 className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity"
-                style={{ color: getTieColor() }}
+                style={{ color: isNext ? "#22c55e" : getTieColor() }}
               />
             )}
           </div>
@@ -661,7 +672,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                     {section.reports.map((report, reportIndex) => {
                       const copyId = `common-${sectionIndex}-${reportIndex}`
                       const colorClass = theme.mode === "dark" ? "text-green-400" : "text-green-600"
-                      return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                      return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, `common-${sectionIndex}`, reportIndex)}</div>
                     })}
                   </div>
                 </div>
@@ -704,7 +715,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                         {section.reports.map((report, reportIndex) => {
                           const copyId = `${rankKey}-${sectionIndex}-${reportIndex}`
                           const colorClass = theme.mode === "dark" ? "text-blue-400" : "text-blue-600"
-                          return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                          return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, `${rankKey}-${sectionIndex}`, reportIndex)}</div>
                         })}
                       </div>
                     </div>
@@ -742,7 +753,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                       {section.reports.map((report, reportIndex) => {
                         const copyId = `duty-${sectionIndex}-${reportIndex}`
                         const colorClass = theme.mode === "dark" ? "text-yellow-400" : "text-yellow-600"
-                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, `duty-${sectionIndex}`, reportIndex)}</div>
                       })}
                     </div>
                   </div>
@@ -779,7 +790,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                       {section.reports.map((report, reportIndex) => {
                         const copyId = `accident-${sectionIndex}-${reportIndex}`
                         const colorClass = theme.mode === "dark" ? "text-red-400" : "text-red-600"
-                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, `accident-${sectionIndex}`, reportIndex)}</div>
                       })}
                     </div>
                   </div>
@@ -816,7 +827,7 @@ export function RadioReportsSection({ userRole }: RadioReportsSectionProps) {
                       {section.reports.map((report, reportIndex) => {
                         const copyId = `senior-${sectionIndex}-${reportIndex}`
                         const colorClass = theme.mode === "dark" ? "text-purple-400" : "text-purple-600"
-                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass)}</div>
+                        return <div key={reportIndex}>{renderReportItem(report, copyId, colorClass, `senior-${sectionIndex}`, reportIndex)}</div>
                       })}
                     </div>
                   </div>

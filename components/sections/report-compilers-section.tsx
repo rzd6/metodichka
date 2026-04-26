@@ -117,6 +117,7 @@ export function ReportCompilerSection() {
     setDispatcherName("")
     setOtherName("")
     setAssistantName("")
+    setNextHighlightIndex(null)
   }
 
   const generatePassengerReports = (reports: string[], callSign: string) => {
@@ -529,7 +530,7 @@ export function ReportCompilerSection() {
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: ${otherName}.`,
-            `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Приволжск, ожидайте 3 минуты.`,
+            `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. ��риволжск, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Приволжск, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут в депо ТЧЭ-1 готов, Н2 зелёный.`,
             `cr Принято! Выполняю.`,
@@ -600,34 +601,35 @@ export function ReportCompilerSection() {
     }
 
     // Copyable report matching lecture style
+    const isNext = nextHighlightIndex === index
     return (
       <button
         key={index}
         onClick={() => copyReport(report, index)}
-        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 group mb-3 ${
-          theme.mode === "dark"
+        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 group mb-3 ${
+          isNext ? "animate-pulse" : theme.mode === "dark"
             ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
             : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
         }`}
         style={{
           borderLeftWidth: "4px",
-          borderLeftColor: getTieColor(),
+          borderLeftColor: isNext ? "#22c55e" : getTieColor(),
+          backgroundColor: isNext ? "rgba(34,197,94,0.10)" : undefined,
+          borderColor: isNext ? "#22c55e" : undefined,
         }}
       >
         <div className="flex items-start justify-between gap-4">
-          <code className={`block font-mono text-sm flex-1 ${colorClass}`}>{report}</code>
+          <code className={`block font-mono text-sm flex-1 ${isNext ? "text-green-400" : colorClass}`}>{report}</code>
           <div
             className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-            style={{
-              backgroundColor: getTieColor() + "20",
-            }}
+            style={{ backgroundColor: isNext ? "#22c55e30" : getTieColor() + "20" }}
           >
             {copiedIndex === index ? (
               <Check className="w-4 h-4" style={{ color: getTieColor() }} />
             ) : (
               <Copy
                 className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity"
-                style={{ color: getTieColor() }}
+                style={{ color: isNext ? "#22c55e" : getTieColor() }}
               />
             )}
           </div>
@@ -636,10 +638,12 @@ export function ReportCompilerSection() {
     )
   }
 
+  const [nextHighlightIndex, setNextHighlightIndex] = useState<number | null>(null)
+
   const copyReport = (text: string, index: number) => {
     navigator.clipboard.writeText(text)
     setCopiedIndex(index)
-    // Removed the undeclared copyTimestamp variable
+    setNextHighlightIndex(index + 1)
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
@@ -935,7 +939,7 @@ export function ReportCompilerSection() {
                   className={`text-base font-medium flex items-center gap-2 ${theme.mode === "dark" ? "text-white" : "text-black"}`}
                 >
                   <User className="w-4 h-4" style={{ color: getTieColor() }} />
-                  Имя и фамилия помощника <span className="text-sm opacity-60">(необязательно)</span>
+                  Имя и фам��лия помощника <span className="text-sm opacity-60">(необязательно)</span>
                 </Label>
                 <Input
                   value={assistantName}

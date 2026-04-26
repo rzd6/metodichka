@@ -5,6 +5,7 @@ import { Copy, Check, BookOpenText } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useTheme } from "@/contexts/theme-context"
 import { getThemeColor } from "@/lib/theme-utils"
+import { BugReportButton } from "@/components/bug-report-button"
 
 export function LecturesSection() {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
@@ -96,6 +97,9 @@ export function LecturesSection() {
           <p className={`text-sm ${theme.mode === "dark" ? "text-white/70" : "text-gray-600"}`}>
             Обучающие материалы для сотрудников РЖД
           </p>
+        </div>
+        <div className="ml-auto">
+          <BugReportButton sectionName="Лекции" />
         </div>
       </div>
 
