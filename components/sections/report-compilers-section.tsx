@@ -21,6 +21,7 @@ export function ReportCompilerSection() {
   const [passNumber, setPassNumber] = useState("")
   const [flightNumber, setFlightNumber] = useState("")
   const [dispatcherName, setDispatcherName] = useState("")
+  const [otherName, setOtherName] = useState("")
   const [assistantName, setAssistantName] = useState("")
 
   const [generatedReports, setGeneratedReports] = useState<string[]>([])
@@ -82,7 +83,7 @@ export function ReportCompilerSection() {
     const isDNC = selectedType === "Рейс с ДНЦ"
     const requiredFields =
       selectedDirection && selectedLocomotive && selectedCategory && locomotiveNumber && passNumber && flightNumber
-    const hasDispatcherInfo = isDNC ? dispatcherName !== "" && selectedRole !== null : true
+    const hasDispatcherInfo = isDNC ? dispatcherName !== "" && otherName !== "" && selectedRole !== null : true
 
     if (!requiredFields || !hasDispatcherInfo) {
       setShowNotification(true)
@@ -114,6 +115,7 @@ export function ReportCompilerSection() {
     setPassNumber("")
     setFlightNumber("")
     setDispatcherName("")
+    setOtherName("")
     setAssistantName("")
   }
 
@@ -127,7 +129,7 @@ export function ReportCompilerSection() {
         if (selectedRole === "Машинист") {
           reports.push(
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr Машинист ${dispatcherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
@@ -137,7 +139,7 @@ export function ReportCompilerSection() {
             `cr Принято, выполняю!`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Приволжск.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Приволожск, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Приволожск, стоянка 1 минута.`,
@@ -145,15 +147,15 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск на перегон до ст. Невский.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист ${dispatcherName}.`,
-            `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Невский, ожидайте 1 минуту.`,
+            `tr ${passNumber} Понятно, прибыли ��од посадку на 1 путь ст. Невский, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Невский, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Мирный готов, Ч1 зелёный.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Мирный, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Мирный, стоянка 1 минута.`,
@@ -168,7 +170,7 @@ export function ReportCompilerSection() {
           reports.push(
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr Машинист Фамилия, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
+            `cr Машинист ${otherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `tr ${passNumber} Заполнили документацию. Магистраль продули, башмаки убрали, ожидайте отправления.`,
@@ -178,7 +180,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Приволжск.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Приволожск, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Приволожск, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Невский готов, Ч1 два жёлтых, верхний мигающий.`,
@@ -186,21 +188,21 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск на перегон до ст. Невский.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Невский, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Невский, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Мирный готов, Ч1 зелёный.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист Фамилия.`,
+            `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Мирный, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Мирный, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут в депо ТЧЭ-1 готов, ЧМ2 лунно-белый.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный в депо ТЧЭ-1.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист Фамилия!`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист ${otherName}!`,
             `tr ${passNumber} Понятно! Прибыли в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
           )
@@ -235,7 +237,7 @@ export function ReportCompilerSection() {
         if (selectedRole === "Машинист") {
           reports.push(
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr Машинист ${dispatcherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
@@ -245,7 +247,7 @@ export function ReportCompilerSection() {
             `cr Принято, выполняю!`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Мирный, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Мирный, стоянка 1 минута.`,
@@ -253,7 +255,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный на перегон до ст. Невский.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 4 путь ст. Невский, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 4 путь ст. Невский, стоянка 1 минута.`,
@@ -261,7 +263,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Приволжск.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Приволжск, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Приволжск, стоянка 1 минута.`,
@@ -276,7 +278,7 @@ export function ReportCompilerSection() {
           reports.push(
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr Машинист Фамилия, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
+            `cr Машинист ${otherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `tr ${passNumber} Заполнили документацию. Магистраль продули, башмаки убрали, ожидайте отправления.`,
@@ -286,7 +288,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Мирный.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Мирный, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Мирный, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Невский готов, Н1 зелёный.`,
@@ -294,7 +296,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный на перегон до ст. Невский.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 4 путь ст. Невский, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 4 путь ст. Невский, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Приволжск готов, Н4 зелёный.`,
@@ -302,13 +304,13 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Приволжск.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Приволжск, ожидайте 1 минуту.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Приволжск, стоянка 1 минута.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут в депо ТЧЭ-1 готов, Н2 зелёный.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск в депо ТЧЭ-1.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист Фамилия!`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист ${otherName}!`,
             `tr ${passNumber} Понятно! Прибыли в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
           )
@@ -351,7 +353,7 @@ export function ReportCompilerSection() {
         if (selectedRole === "Машинист") {
           reports.push(
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr Машинист ${dispatcherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
@@ -361,7 +363,7 @@ export function ReportCompilerSection() {
             `cr Принято, выполняю!`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Приволжск.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Приволожск, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Приволожск, стоянка 3 минуты.`,
@@ -369,7 +371,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск на перегон до ст. Невский.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Невский, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Невский, стоянка 3 минуты.`,
@@ -377,7 +379,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Мирный, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Мирный, стоянка 3 минуты.`,
@@ -392,7 +394,7 @@ export function ReportCompilerSection() {
           reports.push(
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr Машинист Фамилия, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
+            `cr Машинист ${otherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `tr ${passNumber} Заполнили документацию. Магистраль продули, башмаки убрали, ожидайте отправления.`,
@@ -402,7 +404,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Приволжск.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Приволожск, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Приволожск, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Приволожск, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Невский готов, Ч1 два жёлтых, верхний мигающий.`,
@@ -410,21 +412,21 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск на перегон до ст. Невский.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Невский, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Невский, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Невский, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Мирный готов, Ч1 зелёный.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист Фамилия.`,
+            `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Мирный, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Мирный, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Мирный, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут в депо ТЧЭ-1 готов, ЧМ2 лунно-белый.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный в депо ТЧЭ-1.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист Фамилия!`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист ${otherName}!`,
             `tr ${passNumber} Понятно! Прибыли в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
           )
@@ -459,7 +461,7 @@ export function ReportCompilerSection() {
         if (selectedRole === "Машинист") {
           reports.push(
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr Машинист ${dispatcherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
@@ -469,7 +471,7 @@ export function ReportCompilerSection() {
             `cr Принято, выполняю!`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Мирный.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Мирный, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Мирный, стоянка 3 минуты.`,
@@ -477,7 +479,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный на перегон до ст. Невский.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 4 путь ст. Невский, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 4 путь ст. Невский, стоянка 3 минуты.`,
@@ -485,7 +487,7 @@ export function ReportCompilerSection() {
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Приволжск.`,
             `cr Диспетчер!`,
-            `tr ${passNumber} ДНЦ Фамилия, слушаю.`,
+            `tr ${passNumber} ДНЦ ${otherName}, слушаю.`,
             `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: ${dispatcherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Приволжск, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Приволжск, стоянка 3 минуты.`,
@@ -500,7 +502,7 @@ export function ReportCompilerSection() {
           reports.push(
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr Машинист Фамилия, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
+            `cr Машинист ${otherName}, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `cr Заполнили документацию. Магистраль продули, башмаки убрали, состав готов к выезду на линию.`,
             `tr ${passNumber} Понятно, приняли ${lowerLocomotive}-${locomotiveNumber}, Присвоен позывной ${callSign}.`,
             `tr ${passNumber} Заполнили документацию. Магистраль продули, башмаки убрали, ожидайте отправления.`,
@@ -510,7 +512,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} следует по перегону из депо ТЧЭ-1 до ст. Мирный.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 1 путь ст. Мирный, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 1 путь ст. Мирный, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 1 путь ст. Мирный, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Невский готов, Н1 зелёный.`,
@@ -518,7 +520,7 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Мирный на перегон до ст. Невский.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 4 путь ст. Невский, машинист ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 4 путь ст. Невский, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 4 путь ст. Невский, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут до ст. Приволжск готов, Н4 зелёный.`,
@@ -526,13 +528,13 @@ export function ReportCompilerSection() {
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Невский на перегон до ст. Приволжск.`,
             `cr Диспетчер!`,
             `tr ${passNumber} ДНЦ ${dispatcherName}, слушаю.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: Фамилия.`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл под посадку на 2 путь ст. Приволжск. Машинист: ${otherName}.`,
             `tr ${passNumber} Понятно, прибыли под посадку на 2 путь ст. Приволжск, ожидайте 3 минуты.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл на 2 путь ст. Приволжск, стоянка 3 минуты.`,
             `tr ${passNumber} ${selectedLocomotive}-${locomotiveNumber} ${callSign}, маршрут в депо ТЧЭ-1 готов, Н2 зелёный.`,
             `cr Принято! Выполняю.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} отправляется со ст. Приволжск в депо ТЧЭ-1.`,
-            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист Фамилия!`,
+            `cr ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1. Рейс № ${flightNumber} окончен, локомотив сдан, машинист ${otherName}!`,
             `tr ${passNumber} Понятно! Прибыли в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
             `r [ДНЦ] ${selectedLocomotive}-${locomotiveNumber} ${callSign} прибыл в ТЧЭ-1, рейс ${flightNumber} окончен, локомотив сдан.`,
           )
@@ -875,25 +877,6 @@ export function ReportCompilerSection() {
 
             {selectedType === "Рейс с ДНЦ" && (
               <>
-                <div className="space-y-2">
-                  <Label
-                    className={`text-base font-medium flex items-center gap-2 ${theme.mode === "dark" ? "text-white" : "text-black"}`}
-                  >
-                    <User className="w-4 h-4" style={{ color: getTieColor() }} />
-                    Фамилия
-                  </Label>
-                  <Input
-                    value={dispatcherName}
-                    onChange={(e) => setDispatcherName(e.target.value)}
-                    placeholder="Введите фамилию..."
-                    className={`h-12 text-base ${
-                      theme.mode === "dark"
-                        ? "bg-white/5 border-white/10 text-white placeholder:text-white/40"
-                        : "bg-white border-gray-300 text-black placeholder:text-gray-400"
-                    }`}
-                  />
-                </div>
-
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-3">
                     <User className="w-5 h-5" style={{ color: getTieColor() }} />
@@ -904,6 +887,44 @@ export function ReportCompilerSection() {
                   <div className={`space-y-3 p-4 rounded-xl ${theme.mode === "dark" ? "bg-white/5" : "bg-gray-50"}`}>
                     {["Машинист", "Диспетчер"].map((role) => renderOptionButton(role, selectedRole, role, "role"))}
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    className={`text-base font-medium flex items-center gap-2 ${theme.mode === "dark" ? "text-white" : "text-black"}`}
+                  >
+                    <User className="w-4 h-4" style={{ color: getTieColor() }} />
+                    {selectedRole === "Машинист" ? "Ваша фамилия (машинист)" : selectedRole === "Диспетчер" ? "Ваша фамилия (ДНЦ)" : "Ваша фамилия"}
+                  </Label>
+                  <Input
+                    value={dispatcherName}
+                    onChange={(e) => setDispatcherName(e.target.value)}
+                    placeholder="Введите вашу фамилию..."
+                    className={`h-12 text-base ${
+                      theme.mode === "dark"
+                        ? "bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                        : "bg-white border-gray-300 text-black placeholder:text-gray-400"
+                    }`}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    className={`text-base font-medium flex items-center gap-2 ${theme.mode === "dark" ? "text-white" : "text-black"}`}
+                  >
+                    <User className="w-4 h-4" style={{ color: getTieColor() }} />
+                    {selectedRole === "Машинист" ? "Фамилия ДНЦ" : selectedRole === "Диспетчер" ? "Фамилия машиниста" : "Фамилия другого участника"}
+                  </Label>
+                  <Input
+                    value={otherName}
+                    onChange={(e) => setOtherName(e.target.value)}
+                    placeholder="Введите фамилию другого участника..."
+                    className={`h-12 text-base ${
+                      theme.mode === "dark"
+                        ? "bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                        : "bg-white border-gray-300 text-black placeholder:text-gray-400"
+                    }`}
+                  />
                 </div>
               </>
             )}

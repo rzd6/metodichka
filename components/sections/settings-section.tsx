@@ -222,6 +222,7 @@ export function SettingsSection() {
               return (
                 <Card
                   key={option.value}
+                  onClick={() => setColorTheme(option.value)}
                   className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer ${
                     isSelected ? "shadow-2xl scale-105" : "hover:scale-102 opacity-70 hover:opacity-100"
                   }`}

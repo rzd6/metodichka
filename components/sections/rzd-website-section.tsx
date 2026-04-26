@@ -42,6 +42,9 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
 
   const loadData = async () => {
     setIsLoading(true)
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false)
+    }, 8000)
     try {
       const articlesData = await getArticles()
 
@@ -59,6 +62,7 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
         variant: "destructive",
       })
     } finally {
+      clearTimeout(timeoutId)
       setIsLoading(false)
     }
   }
@@ -600,7 +604,7 @@ export function RZDWebsiteSection({ userRole, userNickname }: RZDWebsiteSectionP
                             <img
                               key={index}
                               src={url || "/placeholder.svg"}
-                              alt={`${article.title} - изображение ${index + 1}`}
+                              alt={`${article.title} - изобра��ение ${index + 1}`}
                               className={`rounded-lg ${article.image_url!.length === 1 ? "max-w-md w-auto h-auto" : "w-full max-h-64 h-auto object-contain"}`}
                             />
                           ))}

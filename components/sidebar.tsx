@@ -86,6 +86,16 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
   }
 
   const sectionIcons: { [key: string]: (isActive: boolean) => JSX.Element } = {
+    management: (isActive) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          stroke={getIconColor(isActive)}
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
     contents: (isActive) => (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="3" y="3" width="7" height="7" rx="1" stroke={getIconColor(isActive)} strokeWidth="2" />
@@ -329,6 +339,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
 
   if (canAccessManagement(user.role)) {
     sections.push({ id: "admin", label: "Управление" })
+    sections.push({ id: "management", label: "Руководство" })
   }
 
   const getSidebarBg = () => {
@@ -384,19 +395,21 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
               <>
                 <div className="flex items-center gap-3 mb-4">
                   <div
-                    className="w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-full border-2"
-                    style={{ borderColor: getTieColor() }}
+                    className="w-12 h-12 flex-shrink-0 rounded-full"
+                    style={{ boxShadow: `0 0 0 2.5px ${getTieColor()}` }}
                   >
-                    <Image
-                      src={getAvatarForRole(user.role) || "/placeholder.svg"}
-                      alt="Avatar"
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover object-center scale-110"
-                      style={{
-                        filter: getAvatarFilter(),
-                      }}
-                    />
+                    <div className="w-full h-full overflow-hidden rounded-full flex items-center justify-center">
+                      <Image
+                        src={getAvatarForRole(user.role) || "/placeholder.svg"}
+                        alt="Avatar"
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover object-center scale-110"
+                        style={{
+                          filter: getAvatarFilter(),
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0 flex items-center">
                     <h2 className="text-lg font-bold truncate" style={{ color: getTieColor() }}>
@@ -420,19 +433,21 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, setIsColl
             )}
             {isCollapsed && (
               <div
-                className="w-12 h-12 flex items-center justify-center mx-auto overflow-hidden rounded-full border-2"
-                style={{ borderColor: getTieColor() }}
+                className="w-12 h-12 mx-auto rounded-full"
+                style={{ boxShadow: `0 0 0 2.5px ${getTieColor()}` }}
               >
-                <Image
-                  src={getAvatarForRole(user.role) || "/placeholder.svg"}
-                  alt="Avatar"
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-cover object-center scale-110"
-                  style={{
-                    filter: getAvatarFilter(),
-                  }}
-                />
+                <div className="w-full h-full overflow-hidden rounded-full flex items-center justify-center">
+                  <Image
+                    src={getAvatarForRole(user.role) || "/placeholder.svg"}
+                    alt="Avatar"
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-cover object-center scale-110"
+                    style={{
+                      filter: getAvatarFilter(),
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>

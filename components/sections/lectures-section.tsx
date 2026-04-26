@@ -8,53 +8,65 @@ import { getThemeColor } from "@/lib/theme-utils"
 
 export function LecturesSection() {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
+  const [nextHighlight, setNextHighlight] = useState<Record<string, number>>({})
   const [selectedCategory, setSelectedCategory] = useState<"main" | "additional">("main")
   const { theme } = useTheme()
 
   useEffect(() => {
     setCopiedIndex(null)
+    setNextHighlight({})
   }, [selectedCategory])
 
   const getTieColor = () => getThemeColor(theme.colorTheme)
 
-  const copyToClipboard = (text: string, id: string) => {
+  const copyToClipboard = (text: string, id: string, lectureId: string, index: number) => {
     navigator.clipboard.writeText(text)
     setCopiedIndex(id)
+    setNextHighlight((prev) => ({ ...prev, [lectureId]: index + 1 }))
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
   const renderContent = (content: string[], lectureId: string) => {
     return content.map((line, index) => {
       const lineId = `${lectureId}-${index}`
+      const isNext = nextHighlight[lectureId] === index
 
       return (
         <button
           key={index}
-          onClick={() => copyToClipboard(line, lineId)}
-          className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 group mb-3 ${
-            theme.mode === "dark"
-              ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
-              : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
+          onClick={() => copyToClipboard(line, lineId, lectureId, index)}
+          className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 group mb-3 ${
+            isNext
+              ? "animate-pulse"
+              : theme.mode === "dark"
+                ? "bg-gradient-to-r from-[#0f1419]/80 to-[#0f1419]/60 border-white/10 hover:border-white/30"
+                : "bg-gradient-to-r from-white/80 to-gray-50/60 border-gray-200 hover:border-gray-300"
           }`}
           style={{
             borderLeftWidth: "4px",
-            borderLeftColor: getTieColor(),
+            borderLeftColor: isNext ? "#22c55e" : getTieColor(),
+            backgroundColor: isNext ? "rgba(34,197,94,0.10)" : undefined,
+            borderColor: isNext ? "#22c55e" : undefined,
           }}
         >
           <div className="flex items-start justify-between gap-4">
-            <p className={`text-sm flex-1 ${theme.mode === "dark" ? "text-white/90" : "text-gray-900"}`}>{line}</p>
+            <p
+              className={`text-sm flex-1 ${
+                isNext ? "text-green-400 font-medium" : theme.mode === "dark" ? "text-white/90" : "text-gray-900"
+              }`}
+            >
+              {line}
+            </p>
             <div
               className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-              style={{
-                backgroundColor: getTieColor() + "20",
-              }}
+              style={{ backgroundColor: isNext ? "#22c55e30" : getTieColor() + "20" }}
             >
               {copiedIndex === lineId ? (
                 <Check className="w-4 h-4" style={{ color: getTieColor() }} />
               ) : (
                 <Copy
                   className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity"
-                  style={{ color: getTieColor() }}
+                  style={{ color: isNext ? "#22c55e" : getTieColor() }}
                 />
               )}
             </div>
